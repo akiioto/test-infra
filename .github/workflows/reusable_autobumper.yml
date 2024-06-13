@@ -1,0 +1,66 @@
+name: Reusable Autobumper
+on:
+  workflow_call:
+    inputs:
+      GCP_PROJECT_ID:
+        required: true
+        type: string
+      GITHUB_TOKEN:
+        required: true
+        type: string
+
+jobs:
+  autobump:
+    runs-on: [self-hosted, solinas]
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Hello World Step
+        run: echo "Exiting."
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Show directory structure
+        run: tree
+
+      - name: Configure Git Safe Directory
+        run: git config --global --add safe.directory ${{ github.workspace }}
+
+      - name: Clone Prow Repository
+        run: git clone https://github.com/akiioto/prow.git /tmp/prow
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          check-latest: true
+          
+      - name: Create GitHub token directory
+        run: mkdir -p /tmp/etc/github
+
+      - name: Create GitHub token file
+        run: echo "${{ inputs.GITHUB_TOKEN }}" > /tmp/etc/github/token
+
+      - name: Configure Workload Identity Federation
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/727270599349/locations/global/workloadIdentityPools/github-tools-sap-3/providers/github-tools-sap-3'
+          create_credentials_file: true
+          export_environment_variables: true
+          cleanup_credentials: true
+          access_token_lifetime: 3600s
+          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
+          retries: 3
+          backoff: 250
+          id_token_include_email: false
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ inputs.GCP_PROJECT_ID }}
+
+      - name: List Artifact Registry repositories
+        run: |
+          gcloud artifacts repositories list --project="${{ inputs.GCP_PROJECT_ID }}"

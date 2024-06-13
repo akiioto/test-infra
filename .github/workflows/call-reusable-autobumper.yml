@@ -7,4 +7,3 @@ jobs:
     uses: akiioto/test-infra/.github/workflows/reusable-autobumper.yml@bumper
     with:
       GCP_PROJECT_ID: 'sap-kyma-neighbors-dev'
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

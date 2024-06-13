@@ -1,9 +1,10 @@
 name: Reusable Autobumper
 on:
   workflow_call:
-    inputs:
+    inputs:      
       GCP_PROJECT_ID:
         required: true
+        type: string
 
 jobs:
   autobump:

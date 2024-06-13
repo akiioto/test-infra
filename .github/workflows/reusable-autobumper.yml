@@ -40,7 +40,7 @@ jobs:
         run: mkdir -p /tmp/etc/github
 
       - name: Create GitHub token file
-        run: echo "${{ inputs.GITHUB_TOKEN }}" > /tmp/etc/github/token
+        run: echo "${{ secrets.GITHUB_TOKEN }}" > /tmp/etc/github/token
 
       - name: Configure Workload Identity Federation
         id: auth

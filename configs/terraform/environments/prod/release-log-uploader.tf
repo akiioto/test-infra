@@ -8,6 +8,11 @@ data "github_repository" "compliancy_internal" {
   name     = "compliancy"
 }
 
+import {
+  id = "projects/sap-kyma-prow/serviceAccounts/release-log-uploader@sap-kyma-prow.iam.gserviceaccount.com"
+  to = google_service_account.release_log_uploader
+}
+
 resource "google_service_account" "release_log_uploader" {
   account_id  = var.release_log_uploader_service_account_name
   description = "Service account for release log upload workflow in kyma-project/compliancy and kyma/compliancy repositories."

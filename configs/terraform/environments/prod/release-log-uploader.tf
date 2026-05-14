@@ -14,8 +14,9 @@ import {
 }
 
 resource "google_service_account" "release_log_uploader" {
-  account_id  = var.release_log_uploader_service_account_name
-  description = "Service account for release log upload workflow in kyma-project/compliancy and kyma/compliancy repositories."
+  account_id   = var.release_log_uploader_service_account_name
+  display_name = var.release_log_uploader_service_account_name
+  description  = "Upload module release logs to the bucket"
 }
 
 resource "google_service_account_iam_member" "release_log_uploader_wif_public_github" {
